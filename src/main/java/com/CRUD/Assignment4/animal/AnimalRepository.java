@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Integer> {
     public List<Animal> findBySpecies(String species);
+    public List<Animal> findByNameIgnoreCase(String name);
+    public List<Animal> findByHabitat(String habitat);
 
     @Query("SELECT a FROM Animal a WHERE a.name LIKE %:namePart%")
     public List<Animal> findByNameLike(@Param("namePart") String namePart);

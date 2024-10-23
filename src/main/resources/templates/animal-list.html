@@ -1,10 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${title}">Animal List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
 </head>
 <body>
+<h1 th:text="${title}">All Animals</h1>
 
+<!-- Combined Search Form -->
+<form action="#" th:action="@{/animal/searchBy}" method="get">
+    <label for="searchType">Search by:</label>
+    <select id="searchType" name="searchType">
+        <option value="name">Name</option>
+        <option value="species">Species</option>
+        <option value="habitat">Habitat</option>
+    </select>
+
+    <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter search term" />
+    <button type="submit">Search</button>
+</form>
+
+<!-- Home Button to view all animals -->
+<a href="/animal/all">
+    <button>Home</button>
+</a>
+
+<!-- Animal List Table -->
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Species</th>
+        <th>Habitat</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="animal : ${animalList}">
+        <td th:text="${animal.name}"></td>
+        <td th:text="${animal.species}"></td>
+        <td th:text="${animal.habitat}"></td>
+        <td th:text="${animal.description}"></td>
+        <td>
+            <a th:href="@{/animal/{id}(id=${animal.animalId})}">View</a> |
+            <a th:href="@{/animal/update/{id}(id=${animal.animalId})}">Edit</a> |
+            <a th:href="@{/animal/delete/{id}(id=${animal.animalId})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/animal/create">
+    <button>Create New Animal</button>
+</a>
 </body>
 </html>

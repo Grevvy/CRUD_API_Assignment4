@@ -51,9 +51,15 @@ public class AnimalController {
      * @param animal the new Animal object
      */
     @PostMapping("/new")
-    public String addNewAnimal(Animal animal){
+    public String addNewAnimal(@ModelAttribute Animal animal){
         service.addNewAnimal(animal);
         return "redirect:/animal/all";
+    }
+
+    @GetMapping("/create")
+    public String showCreateAnimalForm(Model model) {
+        model.addAttribute("animal", new Animal());
+        return "animal-create";
     }
 
     /**
@@ -77,7 +83,7 @@ public class AnimalController {
      */
     @PostMapping("/update")
     public String updateAnimal(Animal animal) {
-        service.addNewAnimal(animal);
+        service.updateAnimal(animal.getAnimalId(), animal);
         return "redirect:/animal/" + animal.getAnimalId();
     }
 
@@ -100,10 +106,11 @@ public class AnimalController {
      * @param species the species of the specified animals.
      * @return A List of animals with the same species.
      */
-    @GetMapping("")
+    @GetMapping("/species")
     public String getAnimalsBySpecies(@RequestParam(name = "species", defaultValue = "mammal") String species, Model model) {
-        model.addAttribute("animalList", service.getAnimalBySpecies(species));
-        model.addAttribute("title", "Animal Species: " +species);
+        List<Animal> animals = service.getAnimalBySpecies(species);
+        model.addAttribute("animalList", animals);
+        model.addAttribute("title", "Animal Species: " + species);
         return "animal-list";
     }
 
@@ -121,4 +128,30 @@ public class AnimalController {
         model.addAttribute("title", "Search Results for: " + name);
         return "animal-list";
     }
+
+    @GetMapping("/searchBy")
+    public String searchAnimalsBy(@RequestParam("searchType") String searchType,
+                                  @RequestParam("searchTerm") String searchTerm,
+                                  Model model) {
+        List<Animal> animals;
+
+        switch (searchType) {
+            case "name":
+                animals = service.searchAnimalsByName(searchTerm);
+                break;
+            case "species":
+                animals = service.getAnimalBySpecies(searchTerm);
+                break;
+            case "habitat":
+                animals = service.searchAnimalsByHabitat(searchTerm);  // Implement this in the service/repository
+                break;
+            default:
+                animals = service.getAllAnimals();  // Fallback, show all animals
+        }
+
+        model.addAttribute("animalList", animals);
+        model.addAttribute("title", "Search Results for " + searchType + ": " + searchTerm);
+        return "animal-list";  // Show the search results on the animal-list page
+    }
+
 }

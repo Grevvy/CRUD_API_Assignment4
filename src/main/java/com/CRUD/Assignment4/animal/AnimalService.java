@@ -68,6 +68,7 @@ public class AnimalService {
      * @return A list of Animals that share the same species.
      */
     public List<Animal> getAnimalBySpecies(String species) {
+
         return animalRepository.findBySpecies(species);
     }
 
@@ -80,6 +81,11 @@ public class AnimalService {
     public List<Animal> searchAnimalsByName(String namePart) {
         return animalRepository.findByNameLike(namePart);
     }
+
+    public List<Animal> searchAnimalsByHabitat(String habitat) {
+        return animalRepository.findByHabitat(habitat);
+    }
+
 
 
 }
