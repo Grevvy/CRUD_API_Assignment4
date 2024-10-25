@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * AnimalController.java
- * Includes all REST APU endpoint for mappings for the Animal object.
+ * Includes all MVC endpoint for mappings for the Animal object.
  */
 @Controller
 @RequestMapping("/animal")
@@ -18,8 +18,18 @@ public class AnimalController {
     private AnimalService service;
 
     /**
+     * Sends the user to all animals since nothing for /animal
+     *
+     * @return
+     */
+    @GetMapping("")
+    public String showHomepage() {
+        return "redirect:/animal/all";
+    }
+
+    /**
      * Get a list of all Animals in the database.
-     * http://localhost:8080/animal/all
+     * <a href="http://localhost:8080/animal/all">All</a>
      *
      * @return a list of all Animal objects.
      */
@@ -31,10 +41,10 @@ public class AnimalController {
     }
 
     /**
-     * Get a specific Animal by an Id.
-     * http://localhost:8080/animal/{id}
+     * Get a specific Animal by an id.
+     * <a href="http://localhost:8080/animal/2">One</a>
      *
-     * @param id The unique Id for an Animal.
+     * @param id The unique id for an Animal.
      * @return One Animal object
      */
     @GetMapping("/{id}")
@@ -46,7 +56,7 @@ public class AnimalController {
 
     /**
      * Add a new Animal entry.
-     * http://localhost:8080/animal/add
+     * <a href="http://localhost:8080/animal/new">...</a>
      *
      * @param animal the new Animal object
      */
@@ -56,6 +66,12 @@ public class AnimalController {
         return "redirect:/animal/all";
     }
 
+    /**
+     * Show the create animal form.
+     *
+     * @param model
+     * @return
+     */
     @GetMapping("/create")
     public String showCreateAnimalForm(Model model) {
         model.addAttribute("animal", new Animal());
@@ -64,7 +80,6 @@ public class AnimalController {
 
     /**
      * Update an existing Animal entry.
-     * http://localhost:8080/animal/update/{id}
      *
      * @param id the id of the Animal being updated.
      * @param model the Animal object being updated.
@@ -77,6 +92,7 @@ public class AnimalController {
     }
 
     /**
+     *Perform the update.
      *
      * @param animal
      * @return
@@ -89,7 +105,6 @@ public class AnimalController {
 
     /**
      * Delete an existing Animal object.
-     * http://localhost:8080/animal/delete/{id}
      *
      * @param id the id of the Animal being deleted.
      */
@@ -101,7 +116,7 @@ public class AnimalController {
 
     /**
      * Get a List of Animals of the same species.
-     * http://localhost:8080/animal/species/{species}
+     * <a href="http://localhost:8080/animal?species=mammal">...</a>
      *
      * @param species the species of the specified animals.
      * @return A List of animals with the same species.
@@ -116,7 +131,7 @@ public class AnimalController {
 
     /**
      * Get a list of Animals that share the same name or part of a name.
-     * http://localhost:8080/animal/search?name={String}
+     * <a href="http://localhost:8080/animal?name=bird">...</a>
      *
      * @param name the Animal name or part of animal name to be searched.
      * @return A list of Animals that share the same name or part of a name.
@@ -129,10 +144,16 @@ public class AnimalController {
         return "animal-list";
     }
 
+    /**
+     * Allows the user to search by their specified criteria (i.e. name, species, habitat).
+     *
+     * @param searchType The type of search
+     * @param searchTerm The term of search
+     * @param model
+     * @return
+     */
     @GetMapping("/searchBy")
-    public String searchAnimalsBy(@RequestParam("searchType") String searchType,
-                                  @RequestParam("searchTerm") String searchTerm,
-                                  Model model) {
+    public String searchAnimalsBy(@RequestParam("searchType") String searchType, @RequestParam("searchTerm") String searchTerm, Model model) {
         List<Animal> animals;
 
         switch (searchType) {
@@ -143,15 +164,15 @@ public class AnimalController {
                 animals = service.getAnimalBySpecies(searchTerm);
                 break;
             case "habitat":
-                animals = service.searchAnimalsByHabitat(searchTerm);  // Implement this in the service/repository
+                animals = service.searchAnimalsByHabitat(searchTerm);
                 break;
             default:
-                animals = service.getAllAnimals();  // Fallback, show all animals
+                animals = service.getAllAnimals();
         }
 
         model.addAttribute("animalList", animals);
         model.addAttribute("title", "Search Results for " + searchType + ": " + searchTerm);
-        return "animal-list";  // Show the search results on the animal-list page
+        return "animal-list";
     }
 
 }

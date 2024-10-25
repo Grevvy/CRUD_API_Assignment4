@@ -8,7 +8,7 @@
 <h1>Update Animal</h1>
 
 <form action="#" th:action="@{/animal/update}" th:object="${animal}" method="post">
-    <input type="hidden" th:field="*{animalId}" />  <!-- Hidden field for the animal ID -->
+    <input type="hidden" th:field="*{animalId}" />
 
     <label for="name">Name:</label>
     <input type="text" id="name" th:field="*{name}" required /><br>

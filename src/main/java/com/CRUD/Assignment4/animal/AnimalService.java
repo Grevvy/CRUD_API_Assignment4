@@ -82,6 +82,12 @@ public class AnimalService {
         return animalRepository.findByNameLike(namePart);
     }
 
+    /**
+     * Fetch all Animals of the same habitat.
+     *
+     * @param habitat the habitat of the animal.
+     * @return A list of all animals from the same habitat.
+     */
     public List<Animal> searchAnimalsByHabitat(String habitat) {
         return animalRepository.findByHabitat(habitat);
     }
